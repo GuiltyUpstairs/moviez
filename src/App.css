@@ -1,49 +1,70 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+/*body {*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*  font-family: 'Roboto', sans-serif;*/
+/*  background: #f0f0f0;*/
+/*  min-height: 100vh;*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*}*/
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+/*.app-container {*/
+/*  width: 100%;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  padding: 20px;*/
+/*  box-sizing: border-box;*/
+/*}*/
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/*.container {*/
+/*  background: rgba(255, 255, 255, 0.9);*/
+/*  border-radius: 15px;*/
+/*  padding: 20px;*/
+/*  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);*/
+/*  flex: 1;*/
+/*}*/
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
+/*.movie-card {*/
+/*  transition: transform 0.2s;*/
+/*  border-radius: 15px;*/
+/*  overflow: hidden;*/
+/*  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);*/
+/*}*/
 
-.card {
-  padding: 2em;
-}
+/*.movie-card:hover {*/
+/*  transform: scale(1.05);*/
+/*}*/
 
-.read-the-docs {
-  color: #888;
-}
+/*.add-button {*/
+/*  transition: transform 0.2s;*/
+/*  color: #ff9800;*/
+/*}*/
 
-.product-container {
-  display: flex;
-  flex-wrap: wrap; /* Allows items to wrap to the next line if they overflow */
-  justify-content: center; /* Center items horizontally */
-  gap: 16px; /* Adjusts the space between items */
-}
+/*.add-button:hover {*/
+/*  transform: rotate(45deg);*/
+/*  color: #ff5722;*/
+/*}*/
+
+/*.sidebar {*/
+/*  width: 250px;*/
+/*  margin-right: 20px;*/
+/*}*/
+
+/*.main-content {*/
+/*  flex-grow: 1;*/
+/*  min-height: 70vh; !* Ensures the main content has a minimum height *!*/
+/*}*/
+
+/*nav .MuiToolbar-root {*/
+/*  height: 80px;*/
+/*}*/
+
+/*nav .MuiTypography-root {*/
+/*  font-size: 24px;*/
+/*}*/
+
+/*nav .MuiAvatar-root {*/
+/*  width: 48px;*/
+/*  height: 48px;*/
+/*}*/
