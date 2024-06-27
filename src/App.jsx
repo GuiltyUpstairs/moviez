@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MovieCard from './components/MovieCard.jsx';
 import NavBar from './components/NavBar.jsx';
 import ResultsCount from './components/ResultsCount.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Footer from './components/Footer.jsx';
 import MovieDetailsModal from './components/MovieDetailsModal.jsx';
+import LoginPage from './components/LoginPage.jsx';
+import SignUpPage from './components/SignUpPage.jsx';
 import { Box, Container, Typography, Grid } from '@mui/material';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 
@@ -28,6 +31,7 @@ function App() {
     const [watchlist, setWatchlist] = useState([]);
     const [movieRatings, setMovieRatings] = useState({});
     const [viewType, setViewType] = useState(VIEW_TYPES.SEARCH_RESULTS);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleSearch = (event) => {
         const query = event.target.value.toLowerCase();
@@ -46,14 +50,17 @@ function App() {
                 );
                 const data = await res.json();
 
-                if (data.Response === "True") {
-                    const formattedMovies = data.Search.slice(0, 25).map(movie => ({
+                if (data.Response === 'True') {
+                    const formattedMovies = data.Search.slice(0, 25).map((movie) => ({
                         imdbID: movie.imdbID,
                         title: movie.Title,
                         description: movie.Type,
                         year: movie.Year,
-                        image: movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450?text=No+Image',
-                        rating: movie.imdbRating || 'N/A'
+                        image:
+                            movie.Poster !== 'N/A'
+                                ? movie.Poster
+                                : 'https://via.placeholder.com/300x450?text=No+Image',
+                        rating: movie.imdbRating || 'N/A',
                     }));
                     setFilteredMovies(formattedMovies);
                 } else {
@@ -84,7 +91,7 @@ function App() {
     const handleAddToList = (movie, listIndex) => {
         const updatedMovieLists = [...movieLists];
         const list = updatedMovieLists[listIndex];
-        if (!list.movies.some(m => m.imdbID === movie.imdbID)) {
+        if (!list.movies.some((m) => m.imdbID === movie.imdbID)) {
             list.movies.push(movie);
             setMovieLists(updatedMovieLists);
             alert(`Added to ${list.name}!`);
@@ -112,16 +119,16 @@ function App() {
     };
 
     const handleToggleFavorite = (movie) => {
-        const isAlreadyFavorite = favoriteMovies.some(fav => fav.imdbID === movie.imdbID);
+        const isAlreadyFavorite = favoriteMovies.some((fav) => fav.imdbID === movie.imdbID);
         if (isAlreadyFavorite) {
-            setFavoriteMovies(favoriteMovies.filter(fav => fav.imdbID !== movie.imdbID));
+            setFavoriteMovies(favoriteMovies.filter((fav) => fav.imdbID !== movie.imdbID));
         } else {
             setFavoriteMovies([...favoriteMovies, movie]);
         }
     };
 
     const handleMarkAsWatched = (movie) => {
-        if (!watchedMovies.some(m => m.imdbID === movie.imdbID)) {
+        if (!watchedMovies.some((m) => m.imdbID === movie.imdbID)) {
             setWatchedMovies([...watchedMovies, movie]);
             alert('Marked as watched!');
         }
@@ -129,7 +136,7 @@ function App() {
     };
 
     const handleAddToWatchlist = (movie) => {
-        const isAlreadyInWatchlist = watchlist.some(watch => watch.imdbID === movie.imdbID);
+        const isAlreadyInWatchlist = watchlist.some((watch) => watch.imdbID === movie.imdbID);
         if (!isAlreadyInWatchlist) {
             setWatchlist([...watchlist, movie]);
             alert('Added to watchlist!');
@@ -137,7 +144,7 @@ function App() {
     };
 
     const isFavorite = (movie) => {
-        return favoriteMovies.some(fav => fav.imdbID === movie.imdbID);
+        return favoriteMovies.some((fav) => fav.imdbID === movie.imdbID);
     };
 
     const handleSelectFavorites = () => {
@@ -161,10 +168,7 @@ function App() {
             <Grid container spacing={3}>
                 {movies.map((movie) => (
                     <Grid item xs={12} sm={6} md={4} key={movie.imdbID}>
-                        <MovieCard
-                            movie={movie}
-                            onAddClick={handleAddClick}
-                        />
+                        <MovieCard movie={movie} onAddClick={handleAddClick} />
                     </Grid>
                 ))}
             </Grid>
@@ -183,21 +187,27 @@ function App() {
             case VIEW_TYPES.FAVORITES:
                 return (
                     <>
-                        <Typography variant="h6" sx={{ mt: 4 }}>Favorite Movies</Typography>
+                        <Typography variant="h6" sx={{ mt: 4 }}>
+                            Favorite Movies
+                        </Typography>
                         {renderMovies(favoriteMovies)}
                     </>
                 );
             case VIEW_TYPES.WATCHLIST:
                 return (
                     <>
-                        <Typography variant="h6" sx={{ mt: 4 }}>Watchlist</Typography>
+                        <Typography variant="h6" sx={{ mt: 4 }}>
+                            Watchlist
+                        </Typography>
                         {renderMovies(watchlist)}
                     </>
                 );
             case VIEW_TYPES.CUSTOM_LIST:
                 return (
                     <>
-                        <Typography variant="h6" sx={{ mt: 4 }}>{movieLists[selectedListIndex].name}</Typography>
+                        <Typography variant="h6" sx={{ mt: 4 }}>
+                            {movieLists[selectedListIndex].name}
+                        </Typography>
                         {renderMovies(movieLists[selectedListIndex].movies)}
                     </>
                 );
@@ -208,36 +218,48 @@ function App() {
 
     return (
         <ThemeProvider>
-            <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%' }}>
-                <NavBar searchQuery={searchQuery} handleSearch={handleSearch} />
-                <Box sx={{ display: 'flex', flex: 1 }}>
-                    <Sidebar
-                        movieLists={movieLists}
-                        onCreateList={handleCreateList}
-                        onSelectList={handleSelectList}
-                        onSelectFavorites={handleSelectFavorites}
-                        onSelectWatchlist={handleSelectWatchlist}
-                    />
-                    <Container sx={{ flex: 1, py: 4 }}>
-                        {renderContent()}
-                    </Container>
+            <Router>
+                <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%' }}>
+                    <Routes>
+                        <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
+                        <Route path="/signup" element={<SignUpPage />} />
+                        <Route
+                            path="*"
+                            element={
+                                <>
+                                    <NavBar searchQuery={searchQuery} handleSearch={handleSearch} isLoggedIn={isLoggedIn} />
+                                    <Box sx={{ display: 'flex', flex: 1 }}>
+                                        <Sidebar
+                                            movieLists={movieLists}
+                                            onCreateList={handleCreateList}
+                                            onSelectList={handleSelectList}
+                                            onSelectFavorites={handleSelectFavorites}
+                                            onSelectWatchlist={handleSelectWatchlist}
+                                        />
+                                        <Container sx={{ flex: 1, py: 4 }}>{renderContent()}</Container>
+                                    </Box>
+                                    <Footer />
+                                    {selectedMovie && (
+                                        <MovieDetailsModal
+                                            movie={{ ...selectedMovie, userRating: movieRatings[selectedMovie.imdbID] }}
+                                            open={modalOpen}
+                                            onClose={handleCloseModal}
+                                            movieLists={movieLists}
+                                            onAddToList={handleAddToList}
+                                            onRateMovie={handleRateMovie}
+                                            onToggleFavorite={handleToggleFavorite}
+                                            isFavorite={isFavorite(selectedMovie)}
+                                            onMarkAsWatched={handleMarkAsWatched}
+                                            onAddToWatchlist={handleAddToWatchlist}
+                                        />
+                                    )}
+                                </>
+                            }
+                        />
+                        <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
                 </Box>
-                <Footer />
-            </Box>
-            {selectedMovie && (
-                <MovieDetailsModal
-                    movie={{ ...selectedMovie, userRating: movieRatings[selectedMovie.imdbID] }}
-                    open={modalOpen}
-                    onClose={handleCloseModal}
-                    movieLists={movieLists}
-                    onAddToList={handleAddToList}
-                    onRateMovie={handleRateMovie}
-                    onToggleFavorite={handleToggleFavorite}
-                    isFavorite={isFavorite(selectedMovie)}
-                    onMarkAsWatched={handleMarkAsWatched}
-                    onAddToWatchlist={handleAddToWatchlist}
-                />
-            )}
+            </Router>
         </ThemeProvider>
     );
 }
