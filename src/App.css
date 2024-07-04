@@ -1,70 +1,28 @@
-/*body {*/
-/*  margin: 0;*/
-/*  padding: 0;*/
-/*  font-family: 'Roboto', sans-serif;*/
-/*  background: #f0f0f0;*/
-/*  min-height: 100vh;*/
-/*  display: flex;*/
-/*  justify-content: center;*/
-/*  align-items: center;*/
-/*}*/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
 
-/*.app-container {*/
-/*  width: 100%;*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  padding: 20px;*/
-/*  box-sizing: border-box;*/
-/*}*/
+.movie-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
 
-/*.container {*/
-/*  background: rgba(255, 255, 255, 0.9);*/
-/*  border-radius: 15px;*/
-/*  padding: 20px;*/
-/*  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);*/
-/*  flex: 1;*/
-/*}*/
+.movie-card img {
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+}
 
-/*.movie-card {*/
-/*  transition: transform 0.2s;*/
-/*  border-radius: 15px;*/
-/*  overflow: hidden;*/
-/*  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);*/
-/*}*/
+.movie-card .movie-info {
+    padding: 20px;
+}
 
-/*.movie-card:hover {*/
-/*  transform: scale(1.05);*/
-/*}*/
-
-/*.add-button {*/
-/*  transition: transform 0.2s;*/
-/*  color: #ff9800;*/
-/*}*/
-
-/*.add-button:hover {*/
-/*  transform: rotate(45deg);*/
-/*  color: #ff5722;*/
-/*}*/
-
-/*.sidebar {*/
-/*  width: 250px;*/
-/*  margin-right: 20px;*/
-/*}*/
-
-/*.main-content {*/
-/*  flex-grow: 1;*/
-/*  min-height: 70vh; !* Ensures the main content has a minimum height *!*/
-/*}*/
-
-/*nav .MuiToolbar-root {*/
-/*  height: 80px;*/
-/*}*/
-
-/*nav .MuiTypography-root {*/
-/*  font-size: 24px;*/
-/*}*/
-
-/*nav .MuiAvatar-root {*/
-/*  width: 48px;*/
-/*  height: 48px;*/
-/*}*/
+.movie-card:hover {
+    transform: translateY(-10px);
+}

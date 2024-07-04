@@ -112,6 +112,8 @@ const NavBar = ({ searchQuery, handleSearch, isLoggedIn, onLogout }) => {
                         <MenuItem onClick={() => handleThemeChange('theme2')}>Theme 2</MenuItem>
                         <MenuItem onClick={() => handleThemeChange('theme3')}>Theme 3</MenuItem>
                         <MenuItem onClick={() => handleThemeChange('theme4')}>Theme 4</MenuItem>
+                        <MenuItem onClick={() => handleThemeChange('theme5')}>Theme 5</MenuItem>
+                        <MenuItem onClick={() => handleThemeChange('theme6')}>Theme 6</MenuItem>
                     </Menu>
                     {isLoggedIn ? (
                         <>
@@ -162,3 +164,4 @@ const NavBar = ({ searchQuery, handleSearch, isLoggedIn, onLogout }) => {
 };
 
 export default NavBar;
+

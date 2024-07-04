@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import MovieCard from './components/MovieCard.jsx';
-import NavBar from './components/NavBar.jsx';
-import ResultsCount from './components/ResultsCount.jsx';
-import Sidebar from './components/Sidebar.jsx';
-import Footer from './components/Footer.jsx';
-import MovieDetailsModal from './components/MovieDetailsModal.jsx';
-import LoginPage from './components/LoginPage.jsx';
-import SignUpPage from './components/SignUpPage.jsx';
+import NavBar from './components/NavBar';
+import Sidebar from './components/Sidebar';
+import Footer from './components/Footer';
+import MovieDetailsModal from './components/MovieDetailsModal';
+import LoginPage from './components/LoginPage';
+import SignUpPage from './components/SignUpPage';
+import ResultsCount from './components/ResultsCount'; // Import ResultsCount
 import { Box, Container, Typography, Grid } from '@mui/material';
-import { ThemeProvider } from './context/ThemeContext.jsx';
+import { ThemeProvider } from './context/ThemeContext';
+import axios from 'axios';
+import MovieCard from './components/MovieCard.jsx';
+import { motion } from 'framer-motion';
+import './App.css';
 
 const VIEW_TYPES = {
     SEARCH_RESULTS: 'SEARCH_RESULTS',
@@ -19,7 +22,6 @@ const VIEW_TYPES = {
 };
 
 function App() {
-    const apiKey = '21c70ffa';
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [movieLists, setMovieLists] = useState([{ name: 'Default List', movies: [] }]);
@@ -27,7 +29,6 @@ function App() {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [favoriteMovies, setFavoriteMovies] = useState([]);
-    const [watchedMovies, setWatchedMovies] = useState([]);
     const [watchlist, setWatchlist] = useState([]);
     const [movieRatings, setMovieRatings] = useState({});
     const [viewType, setViewType] = useState(VIEW_TYPES.SEARCH_RESULTS);
@@ -44,14 +45,11 @@ function App() {
 
         async function fetchMovies() {
             try {
-                const res = await fetch(
-                    `http://www.omdbapi.com/?apikey=${apiKey}&s=${searchQuery}`,
-                    { signal: controller.signal },
-                );
-                const data = await res.json();
+                const res = await axios.get(`http://www.omdbapi.com/?apikey=21c70ffa&s=${searchQuery}`, { signal: controller.signal });
+                const data = await res.data;
 
                 if (data.Response === 'True') {
-                    const formattedMovies = data.Search.slice(0, 25).map((movie) => ({
+                    const formattedMovies = data.Search.slice(0, 18).map((movie) => ({
                         imdbID: movie.imdbID,
                         title: movie.Title,
                         description: movie.Type,
@@ -67,7 +65,9 @@ function App() {
                     setFilteredMovies([]);
                 }
             } catch (err) {
-                console.log(err.message);
+                if (err.name !== 'CanceledError') {
+                    console.log(err.message);
+                }
             }
         }
 
@@ -83,8 +83,19 @@ function App() {
         };
     }, [searchQuery]);
 
-    const handleAddClick = (movie) => {
-        setSelectedMovie(movie);
+    const fetchMovieDetails = async (imdbID) => {
+        try {
+            const res = await axios.get(`http://www.omdbapi.com/?apikey=21c70ffa&i=${imdbID}`);
+            return res.data;
+        } catch (err) {
+            console.log(err.message);
+            return null;
+        }
+    };
+
+    const handleAddClick = async (movie) => {
+        const fullMovieDetails = await fetchMovieDetails(movie.imdbID);
+        setSelectedMovie(fullMovieDetails);
         setModalOpen(true);
     };
 
@@ -128,8 +139,8 @@ function App() {
     };
 
     const handleMarkAsWatched = (movie) => {
-        if (!watchedMovies.some((m) => m.imdbID === movie.imdbID)) {
-            setWatchedMovies([...watchedMovies, movie]);
+        if (!watchlist.some((m) => m.imdbID === movie.imdbID)) {
+            setWatchlist([...watchlist, movie]);
             alert('Marked as watched!');
         }
         handleCloseModal();
@@ -217,6 +228,7 @@ function App() {
     };
 
     return (
+
         <ThemeProvider>
             <Router>
                 <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%' }}>
@@ -236,7 +248,7 @@ function App() {
                                             onSelectFavorites={handleSelectFavorites}
                                             onSelectWatchlist={handleSelectWatchlist}
                                         />
-                                        <Container sx={{ flex: 1, py: 4 }}>{renderContent()}</Container>
+                                        <Container sx={{ flex: 1, py: 4, backgroundColor: 'background.default' }}>{renderContent()}</Container>
                                     </Box>
                                     <Footer />
                                     {selectedMovie && (

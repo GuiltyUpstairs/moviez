@@ -37,6 +37,20 @@ export const ThemeProvider = ({ children }) => {
             paper: '#FFFFFF',
             text: '#000000',
         },
+        theme5: {
+            primary: '#FF5733',
+            secondary: '#C70039',
+            background: '#900C3F',
+            paper: '#581845',
+            text: '#F1C40F',
+        },
+        theme6: {
+            primary: '#2980B9',
+            secondary: '#8E44AD',
+            background: '#2C3E50',
+            paper: '#ECF0F1',
+            text: '#BDC3C7',
+        },
     };
 
     const currentTheme = themes[themeType];
@@ -76,3 +90,4 @@ export const ThemeProvider = ({ children }) => {
         </ThemeContext.Provider>
     );
 };
+

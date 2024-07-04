@@ -1,5 +1,19 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, IconButton, Box, MenuItem, Select } from '@mui/material';
+import React from 'react';
+import {
+    Box,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Typography,
+    Button,
+    IconButton,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Rating,
+} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import CloseIcon from '@mui/icons-material/Close';
@@ -16,66 +30,115 @@ const MovieDetailsModal = ({
                                onMarkAsWatched,
                                onAddToWatchlist,
                            }) => {
-    const [selectedListIndex, setSelectedListIndex] = useState(0);
+    const [selectedListIndex, setSelectedListIndex] = React.useState(0);
 
-    if (!movie) return null;
+    const handleListChange = (event) => {
+        setSelectedListIndex(event.target.value);
+    };
 
-    const handleAddToList = () => {
+    const handleAddToSelectedList = () => {
         onAddToList(movie, selectedListIndex);
     };
+
+    const {
+        Title: title,
+        Year: year,
+        Poster: poster,
+        Runtime: runtime,
+        imdbRating,
+        Plot: plot,
+        Genre: genre,
+        Director: director,
+        Actors: actors,
+        Released: released,
+    } = movie;
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>
-                {movie.title}
-                <IconButton aria-label="close" onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                {title}
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
             <DialogContent dividers>
-                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
-                    <Box sx={{ flex: 1, pr: { md: 2 }, pb: { xs: 2, md: 0 } }}>
-                        <img src={movie.image} alt={movie.title} style={{ width: '100%', borderRadius: '8px' }} />
+                <Box display="flex" flexDirection="row" gap={3}>
+                    <Box sx={{ flex: '1 1 0', display: 'flex', justifyContent: 'center' }}>
+                        <img
+                            src={poster}
+                            alt={title}
+                            style={{ width: '100%', height: 'auto', maxWidth: '300px', borderRadius: '8px' }} // Better size for image
+                        />
                     </Box>
-                    <Box sx={{ flex: 2 }}>
+                    <Box sx={{ flex: '2 1 0', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Typography variant="h6" component="div">
+                            {title}
+                        </Typography>
                         <Typography variant="body1" gutterBottom>
-                            {movie.description}
+                            {plot}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Year: {movie.year}
+                        <Typography variant="body2" color="text.secondary">
+                            Year: {year}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Rating: {movie.rating}
+                        <Typography variant="body2" color="text.secondary">
+                            Released: {released}
                         </Typography>
-                        <Select
-                            value={selectedListIndex}
-                            onChange={(e) => setSelectedListIndex(e.target.value)}
-                            fullWidth
-                            variant="outlined"
-                            sx={{ mt: 2 }}
-                        >
-                            {movieLists.map((list, index) => (
-                                <MenuItem value={index} key={index}>
-                                    {list.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                        <Typography variant="body2" color="text.secondary">
+                            Runtime: {runtime}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Genre: {genre}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Director: {director}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Actors: {actors}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            IMDb Rating: {imdbRating}
+                        </Typography>
+                        <Rating
+                            name="user-rating"
+                            value={movie.userRating || 0}
+                            onChange={(event, newValue) => onRateMovie(movie, newValue)}
+                        />
                     </Box>
                 </Box>
             </DialogContent>
             <DialogActions>
-                <IconButton color="primary" onClick={() => onToggleFavorite(movie)}>
-                    <FavoriteIcon color={isFavorite ? 'secondary' : 'inherit'} />
+                <FormControl fullWidth>
+                    <InputLabel id="select-list-label">Select List</InputLabel>
+                    <Select
+                        labelId="select-list-label"
+                        value={selectedListIndex}
+                        label="Select List"
+                        onChange={handleListChange}
+                    >
+                        {movieLists.map((list, index) => (
+                            <MenuItem key={index} value={index}>
+                                {list.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <Button onClick={handleAddToSelectedList}>Add to List</Button>
+                </FormControl>
+                <IconButton onClick={() => onToggleFavorite(movie)} color={isFavorite ? 'error' : 'default'}>
+                    <FavoriteIcon />
                 </IconButton>
-                <IconButton color="primary" onClick={() => onMarkAsWatched(movie)}>
+                <IconButton onClick={() => onAddToWatchlist(movie)}>
                     <WatchLaterIcon />
                 </IconButton>
-                <Button onClick={handleAddToList} variant="contained" color="primary">
-                    Add to List
-                </Button>
-                <Button onClick={() => onAddToWatchlist(movie)} variant="contained" color="primary">
-                    Add to Watchlist
-                </Button>
+                <Button onClick={() => onMarkAsWatched(movie)}>Mark as Watched</Button>
             </DialogActions>
         </Dialog>
     );
